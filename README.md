@@ -7,24 +7,20 @@ Mac 請看：[Mac](#mac)
 
 
 ## <a name="mac">For Mac Users</a>
+部分步驟如有困難，可以參考以下影片  
+![]()
+
 這次主要會在終端機(Terminal)做操作。
 ### Step 1
-#### Step 1.1 安裝Xcode & homebrew
+#### Step 1.1 安裝Xcode
 請先到App Store 安裝XCode，檔案有點大，會需要一段時間。   
 Xcode ?  
 > 在mac上做開發的一個IDE（像是dev c++也是ide)，可以開發iphone或mac上的應用程式，他文字編輯器、編譯器等等的都有包含，不過我們這次只是利用他來建立你c++編譯器(g++)   
 
-[homebrew](https://brew.sh/index_zh-tw.html) ?
-> 簡單來說，他是一個套件管理軟體，而套件就是人家寫好的一些可以用的程式。所以你可以用homebrew安裝一些你會用到的而且別人寫好的code(省時間呀～)，或者更新那個套件等等。      
-
-在安裝完Xcode後，開啟Xcode同意授權，等Xcode授權完畢且開啟完成後，開啟 終端機(在 finder 點 /應用程式/工具程式/終端機） 之後，輸入並執行(按Enter):      
-  `/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"`      
 
 #### Step 1.2 安裝sdl2
-打開終端機，執行：  `brew install sdl2`     
-brew(也就是homebrew)就會去找編譯好的sdl2 函數庫，下載到你的電腦上。  
-
-可以執行`ls /usr/local/Cellar/`(ls是一個指令，叫終端機list出 /usr/local/Cellar/ 這個資料夾有什麼東西) **會出現一個`sdl2`項目**   
+到[這裡](https://www.libsdl.org/download-2.0.php) ，下載`Development Libraries:`底下：`SDL2-2.0.8.dmg`  
+點擊兩下後， 將`SDL2.framework`拉進去`Library/Frameworks`
 
 ### Step 2 創建new project
 繼續在終端機上面執行以下指令（直接複製貼上也可以）：
@@ -102,21 +98,6 @@ int main( int argc, char* args[] )
 
 ```   
 
-### Step 3 將SDL 檔案 加入這個project
-方便起見，在終端機執行：`open /usr/local/Cellar/sdl2`  
-把最右邊的SDL2檔案夾 **複製** 到剛剛建立的myproject/include 裡面    
-
-![](./img/01.png)   
-
-把最右邊的lib檔案夾內的東西 **複製** 到剛剛建立的myproject/lib 裡面    
-
-![](./img/02.png)
-
-所以myproject 這個資料夾有：  
-
-![](./img/03.png)   
-
-![](./img/04.png)
 
 接著， 編輯 Makefile:
 
@@ -140,3 +121,131 @@ g前面是'tab'
 ## <a name="win">For Window Users</a>
 
 For Window Users
+部分步驟如有困難，可以參考以下影片    
+![]()  
+
+### Step 1
+假設已安裝Dev C++
+#### Step 1.1 下載SDL2
+請點[此網址](https://www.libsdl.org/download-2.0.php)，下載 **Development Libraries:** 底下 **SDL2-devel-2.0.8-mingw.tar.gz (MinGW 32/64-bit)**，並解壓縮。
+
+
+#### Step 1.2 在dev c++ 設定
+打開Dev C++，按`工具（T）/編譯器選項（E）`
+![](./img/w0.png)
+
+到`目錄（Directories`)的`C++印入檔（C++ includes)`點擊`開啟`（藍色框框裡的)
+![刪除無所作用的(Delete Invalid）的右上角icon](./img/w1.png)
+
+從剛剛下載並解壓縮後的資料夾(SDL2-2.0.8)，
+選擇其中的`x86_64-w64-mingw32`的 **`include`** 資料夾，如下圖。
+![](./img/w2.png)
+
+按確定後，再按`新增(Add)`
+![](./img/w3.png)
+出現：
+![](./img/w4.png)
+
+
+
+再重複類似的動作，到`程式庫(Libraries)`，開啟`x86_64-w64-mingw32`的 **`lib`** 資料夾，按確定。
+![](./img/w5.png)
+
+最後出現
+![](./img/w6.png)
+
+
+### Step 2 創建new project
+#### Step2.1 include sdl2
+複製`SDL2-2.0.8/x86_64-w64-mingw32/bin`裡的`SDL2.dll`到你即將建立的專案資料夾
+![](./img/w7.png)
+
+### Step 2.2
+按`檔案(File)/開啟新檔(New File)/專案(Project)`，選"Empty Project"
+![](./img/w12.jpg)
+
+到`專案Project/專案選項(project options)`，選擇`General(一般)`，點選 **`Win32 GUI`**(這樣跑的時候，console 不會跳出來)，
+![](./img/w10.jpg)
+
+![](./img/w11.png)
+
+
+接著選擇`參數(Parameters)/`，在Linker輸入（如下圖):
+```
+-lmingw32
+-lSDL2main
+-lSDL2
+```
+![](./img/w13.png)
+
+#### Step 2.3 main.cpp
+增加一個cpp檔案，並貼上以下程式碼:
+![](./img/w14.jpg)  
+
+```C++
+
+//Using SDL and standard IO
+//----------------------
+#include "SDL2/SDL.h"
+//-----------------------
+#include <stdio.h>
+
+//Screen dimension constants
+const int SCREEN_WIDTH = 640;
+const int SCREEN_HEIGHT = 480;
+
+int main( int argc, char* args[] )
+{
+    //The window we'll be rendering to
+    SDL_Window* window = NULL;
+
+    //The surface contained by the window
+    SDL_Surface* screenSurface = NULL;
+
+    //Initialize SDL
+    if( SDL_Init( SDL_INIT_VIDEO ) < 0 )
+    {
+        printf( "SDL could not initialize! SDL_Error: %s\n", SDL_GetError() );
+    }
+    else
+    {
+        printf("jj");
+        //Create window
+        window = SDL_CreateWindow( "SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN );
+        if( window == NULL )
+        {
+            printf( "Window could not be created! SDL_Error: %s\n", SDL_GetError() );
+        }
+        else
+        {
+            //Get window surface
+            screenSurface = SDL_GetWindowSurface( window );
+
+            //Fill the surface white
+            SDL_FillRect( screenSurface, NULL, SDL_MapRGB( screenSurface->format, 0xFF, 0xFF, 0xFF ) );
+
+            //Update the surface
+            SDL_UpdateWindowSurface( window );
+
+            //Wait two seconds
+            SDL_Delay( 3000 );
+        }
+    }
+
+    //Destroy window
+    SDL_DestroyWindow( window );
+
+    //Quit SDL subsystems
+    SDL_Quit();
+
+    return 0;
+}
+
+
+
+
+```
+
+
+接著編譯、執行整個project:
+如果有一個白色的視窗跑出來兩秒，就大功告成了~~~~
